@@ -1,0 +1,21 @@
+{
+  "name": "velocity-loader",
+  "version": "0.1.0",
+  "description": "java-velocity/vm loader for webpack",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "velocity",
+    "vm",
+    "loader",
+    "webpack"
+  ],
+  "dependencies": {
+    "velocityjs":"^0.9.6",
+    "loader-utils": "^1.1.0"
+  },
+  "author": "yuanwen",
+  "license": "MIT"
+}
