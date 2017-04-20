@@ -8,18 +8,37 @@ const {
   parse
 } = Velocity
 
-module.exports = function (content) {
-  this.cacheable()
-  const callback = this.async();
-  const fileName=path.basename(this.resourcePath, '.vm')
-  const filePath=path.dirname(this.resourcePath);
-  const mockPath = path.join(filePath,`${fileName}.mock.json`);
+let watcher;
 
-  this.addDependency(mockPath);
-  fs.readFile(mockPath, 'utf-8', function (err, text) {
-    const mock = Object.assign(JSON.parse(text))
-    let result = new Compile(parse(content))
-      .render(err ? {} : mock);
-    callback(null, result);
-  })
+const macros = (resourcePath, mock) => {
+  return {
+    parse(filePath) {
+      return this.eval(this.include(filePath), mock);
+    },
+    include(filePath) {
+      const absPath = path.resolve(path.dirname(resourcePath), filePath);
+      if (!fs.existsSync(absPath)) return "";
+      watcher(absPath);
+      return fs.readFileSync(absPath, "utf8");
+    }
+  }
+}
+
+module.exports = function (content) {
+  if (this.cacheable) {
+    this.cacheable(true)
+  }
+  const callback = this.async();
+  const filePath = this.resourcePath;
+  const fileName = path.basename(filePath).split('.')[0];
+  const fileDirPath = path.dirname(filePath);
+  const mockPath = path.join(fileDirPath, `${fileName}.mock.js`);
+
+  watcher = this.addDependency
+  watcher(mockPath);
+
+  const mock = require(mockPath);
+  let result = new Compile(parse(content))
+    .render(mock, macros(filePath, mock));
+  callback(null, 'module.exports = ' + JSON.stringify(result) + ';');
 }
