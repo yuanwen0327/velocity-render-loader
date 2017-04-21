@@ -40,5 +40,5 @@ module.exports = function (content) {
   const mock = require(mockPath);
   let result = new Compile(parse(content))
     .render(mock, macros(filePath, mock));
-  callback(null, 'module.exports = ' + JSON.stringify(result) + ';');
+  callback(null, result);
 }
