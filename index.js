@@ -10,13 +10,25 @@ const {
 
 let watcher;
 
-const macros = (resourcePath, mock) => {
+// resourcePath vm文件路径
+const macros = (resourcePath, options, mock) => {
   return {
     parse(filePath) {
       return this.eval(this.include(filePath), mock);
     },
     include(filePath) {
-      const absPath = path.resolve(path.dirname(resourcePath), filePath);
+      // console.log(filePath, 'filePath')
+
+      //获取真实路径
+      let absPath;
+      if (options.basePath) {
+        absPath = path.join(options.basePath,filePath);
+      // console.log(absPath, 'absPath')
+
+      } else {
+        absPath = path.resolve(path.dirname(resourcePath), filePath);
+      }
+      // console.log(absPath, 'absPath')
       if (!fs.existsSync(absPath)) return "";
       watcher(absPath);
       return fs.readFileSync(absPath, "utf8");
@@ -25,10 +37,12 @@ const macros = (resourcePath, mock) => {
 }
 
 module.exports = function (content) {
-  if (this.cacheable) {
-    this.cacheable(true)
-  }
+  // if (this.cacheable) {
+  //   this.cacheable(true)
+  // }
   const callback = this.async();
+  const options = loaderUtils.getOptions(this);
+  // console.log(options);
   const filePath = this.resourcePath;
   const fileName = path.basename(filePath).split('.')[0];
   const fileDirPath = path.dirname(filePath);
@@ -39,6 +53,6 @@ module.exports = function (content) {
 
   const mock = require(mockPath);
   let result = new Compile(parse(content))
-    .render(mock, macros(filePath, mock));
+    .render(mock, macros(filePath, options, mock));
   callback(null, result);
 }
