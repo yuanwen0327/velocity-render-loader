@@ -37,9 +37,9 @@ const macros = (resourcePath, options, mock) => {
 }
 
 module.exports = function (content) {
-  // if (this.cacheable) {
-  //   this.cacheable(true)
-  // }
+  if (this.cacheable) {
+    this.cacheable(true)
+  }
   const callback = this.async();
   const options = loaderUtils.getOptions(this);
   // console.log(options);
@@ -51,7 +51,10 @@ module.exports = function (content) {
   watcher = this.addDependency
   watcher(mockPath);
 
+  //清除require缓存
+  delete require.cache[mockPath]
   const mock = require(mockPath);
+  // console.log(mock);
   let result = new Compile(parse(content))
     .render(mock, macros(filePath, options, mock));
   callback(null, result);
