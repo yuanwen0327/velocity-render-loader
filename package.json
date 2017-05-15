@@ -1,6 +1,6 @@
 {
   "name": "velocity-render-loader",
-  "version": "0.2.1",
+  "version": "0.2.2",
   "description": "java-velocity/vm loader for webpack",
   "main": "index.js",
   "scripts": {
