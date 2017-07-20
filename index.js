@@ -7,6 +7,7 @@ const {
   Compile,
   parse
 } = Velocity
+const _ = require('lodash')
 
 let watcher;
 
@@ -22,8 +23,8 @@ const macros = (resourcePath, options, mock) => {
       //获取真实路径
       let absPath;
       if (options.basePath) {
-        absPath = path.join(options.basePath,filePath);
-      // console.log(absPath, 'absPath')
+        absPath = path.join(options.basePath, filePath);
+        // console.log(absPath, 'absPath')
 
       } else {
         absPath = path.resolve(path.dirname(resourcePath), filePath);
@@ -41,7 +42,10 @@ module.exports = function (content) {
     this.cacheable(true)
   }
   const callback = this.async();
-  const options = loaderUtils.getOptions(this);
+  const options = _.defaults(loaderUtils.getOptions(this), {
+    compileVm: true,
+    compileEjs: false
+  })
   // console.log(options);
   const filePath = this.resourcePath;
   const fileName = path.basename(filePath).split('.')[0];
@@ -55,7 +59,15 @@ module.exports = function (content) {
   delete require.cache[mockPath]
   const mock = require(mockPath);
   // console.log(mock);
-  let result = new Compile(parse(content))
-    .render(mock, macros(filePath, options, mock));
-  callback(null, result);
+  //解析vm
+  if (options.compileVm) {
+    content = new Compile(parse(content))
+      .render(mock, macros(filePath, options, mock));
+  }
+  //解析ejs
+  if (options.compileEjs) {
+    var _compile = _.template(content);
+    content = _compile(mock.CONFIG || {})
+  }
+  callback(null, content);
 }

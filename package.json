@@ -1,6 +1,6 @@
 {
   "name": "velocity-render-loader",
-  "version": "0.2.3",
+  "version": "0.2.4",
   "description": "java-velocity/vm loader for webpack",
   "main": "index.js",
   "scripts": {
@@ -13,8 +13,9 @@
     "webpack"
   ],
   "dependencies": {
-    "velocityjs":"^0.9.6",
-    "loader-utils": "^1.1.0"
+    "loader-utils": "^1.1.0",
+    "lodash": "^4.17.4",
+    "velocityjs": "^0.9.6"
   },
   "author": "yuanwen",
   "license": "MIT"
