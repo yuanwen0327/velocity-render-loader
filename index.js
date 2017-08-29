@@ -61,7 +61,9 @@ module.exports = function (content) {
   // console.log(mock);
   //解析vm
   if (options.compileVm) {
-    content = new Compile(parse(content))
+    content = new Compile(parse(content), {
+        escape: false
+      })
       .render(mock, macros(filePath, options, mock));
   }
   //解析ejs
