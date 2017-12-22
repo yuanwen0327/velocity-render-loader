@@ -37,7 +37,7 @@ module: {
 ```javascript
 new HtmlWebpackPlugin({
   filename: 'a.html',
-  template: '/path/to/a.vm', 
+  template: '/path/to/a.vm',
   inject: true
 }
 ```
@@ -86,10 +86,10 @@ module.exports = {
 
 ### Options
 
-
 ```javascript
 options: {
-  basePath: path.join(__dirname, 'src')
+  basePath: path.join(__dirname, 'src'),
+  mockFile: '/path/to/mock.js'
 }
 ```
 
@@ -99,11 +99,7 @@ options: {
   ```html
     #parse("/shared/components/header/header.vtl")
   ```
-  > 在某些情况下，后端渲染vm时的相对路径与前端环境不同。最好使用绝对路径来查找文件位置。 
+  > 在某些情况下，后端渲染vm时的相对路径与前端环境不同。最好使用绝对路径来查找文件位置。
 
 * `compileVm`: 是否开启vm解析器，默认为`true`
 * `compileEjs`: 是否开启ejs解析器，默认为`false`
-
-
-
-
