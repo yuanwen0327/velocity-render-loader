@@ -50,7 +50,7 @@ module.exports = function (content) {
   const filePath = this.resourcePath;
   const fileName = path.basename(filePath).split('.')[0];
   const fileDirPath = path.dirname(filePath);
-  const mockPath = path.join(fileDirPath, `${fileName}.mock.js`);
+  const mockPath = typeof options.mockFile !== 'undefined' ? path.resolve(options.mockFile) : path.join(fileDirPath, `${fileName}.mock.js`);
 
   watcher = this.addDependency
   watcher(mockPath);
