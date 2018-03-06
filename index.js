@@ -44,21 +44,25 @@ module.exports = function (content) {
   const callback = this.async();
   const options = _.defaults(loaderUtils.getOptions(this), {
     compileVm: true,
-    compileEjs: false
+    compileEjs: false,
+    removeComments: false
   })
   // console.log(options);
   const filePath = this.resourcePath;
   const fileName = path.basename(filePath).split('.')[0];
   const fileDirPath = path.dirname(filePath);
-  const mockPath = path.join(fileDirPath, `${fileName}.mock.js`);
 
   watcher = this.addDependency
-  watcher(mockPath);
 
-  //清除require缓存
-  delete require.cache[mockPath]
-  const mock = require(mockPath);
-  // console.log(mock);
+  const mockPath = path.join(fileDirPath, `${fileName}.mock.js`);
+  let mock = {}
+
+  if (fs.existsSync(mockPath)) {
+    watcher(mockPath);
+    delete require.cache[mockPath]
+    mock = require(mockPath);
+  }
+
   //解析vm
   if (options.compileVm) {
     content = new Compile(parse(content), {
@@ -66,10 +70,18 @@ module.exports = function (content) {
       })
       .render(mock, macros(filePath, options, mock));
   }
+
   //解析ejs
   if (options.compileEjs) {
     var _compile = _.template(content);
     content = _compile(mock.CONFIG || {})
   }
+
+  if (options.removeComments) {
+    content = content
+      .replace(/#\*[\s\S]*?\*#/g, '')
+      .replace(/##[\s\S]*?\n/g, '')
+  }
+
   callback(null, content);
 }

@@ -82,7 +82,7 @@ module.exports = {
 </head>
 ```
 
-更多可以支持的指令见 https://github.com/shepherdwind/velocity.js
+更多支持的指令见 https://github.com/shepherdwind/velocity.js
 
 ### Options
 
@@ -103,6 +103,8 @@ options: {
 
 * `compileVm`: 是否开启vm解析器，默认为`true`
 * `compileEjs`: 是否开启ejs解析器，默认为`false`
+* `removeComments` 是否去除vm注释，默认为`false`
+  > 删除vm注释后，可以使用html-minifier等工具进行压缩
 
 
 
